@@ -42,6 +42,8 @@ export class Arena {
       img.src = `${import.meta.env.BASE_URL}art/${name}.png`;
       this.images[name] = img;
     });
+    this.backdrop = new Image();
+    this.backdrop.src = `${import.meta.env.BASE_URL}art/alien-arena-backdrop.png`;
     this.emojiTargets = [];
     this.resize();
     this.observer = new ResizeObserver(() => this.resize());
@@ -272,11 +274,16 @@ export class Arena {
     ctx.fillStyle = '#171126';
     ctx.fillRect(0, 0, this.w, this.h);
 
-    ctx.fillStyle = '#0d0a18';
-    ctx.fillRect(0, 0, this.w, 110);
-    ctx.fillStyle = '#22183a';
-    for (let i = 0; i < this.w; i += 44) ctx.fillRect(i, 62 + (i % 88 === 0 ? 8 : 0), 36, 48);
-    ctx.fillStyle = '#2d2542';
+    if (this.backdrop.complete && this.backdrop.naturalWidth) {
+      const scale = Math.max(this.w / this.backdrop.naturalWidth, this.h / this.backdrop.naturalHeight);
+      const width = this.backdrop.naturalWidth * scale;
+      const height = this.backdrop.naturalHeight * scale;
+      ctx.drawImage(this.backdrop, (this.w - width) / 2, (this.h - height) / 2, width, height);
+      ctx.fillStyle = 'rgba(8, 6, 22, .32)';
+      ctx.fillRect(0, 0, this.w, this.h);
+    }
+
+    ctx.fillStyle = 'rgba(18, 12, 38, .18)';
     ctx.fillRect(0, this.h - 100, this.w, 100);
     ctx.strokeStyle = '#5b4d72';
     ctx.lineWidth = 4;
