@@ -58,14 +58,13 @@ export function Home({ state, dispatch }) {
 const STEPS = [
   ['Read', 'Open the research note. It changes every run. Find how many items the verification round contains and enter that number.'],
   ['Verify', 'Label each sample as human-made or AI-made. Samples are drawn at random: text, news, audio and images. Each correct label earns one attempt.'],
-  ['Fly', 'Tap, click or press SPACE to flap through endless gates. A crash ends the attempt. You get as many attempts as you answered correctly, and your highest score counts.'],
+  ['Fight', 'Move around the city arena and destroy incoming alien drones. Aim and attack with mouse or touch. Switch between Ben and unlocked alien forms, each with different speed, armor, and attack power. Waves become harder until your health reaches zero.'],
 ];
 export function How({ dispatch }) {
   return (
     <div className="card page">
       <h2>How to play</h2>
       <ol className="steps">{STEPS.map(([t, d], i) => <motion.li key={t} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .08 * i }}><b>{t}</b><span>{d}</span></motion.li>)}</ol>
-      <p className="note">Gold coins in each gate are worth bonus points. Coins power up the watch: each level changes your form and multiplies your points.</p>
       <p className="muted small">Educational prototype. The sample labels are curated, not a real AI detector.</p>
       <Btn variant="play" onClick={() => dispatch({ type: 'go', screen: 'home' })}>Got it</Btn>
     </div>

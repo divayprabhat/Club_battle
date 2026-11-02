@@ -14,7 +14,7 @@ export function TopHud({ state, dispatch }) {
       </button>
       {p > 0 && (
         <ol className="phases" aria-label="Mission progress">
-          {['Read', 'Verify', 'Fly'].map((t, i) => <li key={t} className={i + 1 < p ? 'done' : i + 1 === p ? 'now' : ''} aria-current={i + 1 === p ? 'step' : undefined}>{t}</li>)}
+          {['Read', 'Verify', 'Fight'].map((t, i) => <li key={t} className={i + 1 < p ? 'done' : i + 1 === p ? 'now' : ''} aria-current={i + 1 === p ? 'step' : undefined}>{t}</li>)}
         </ol>
       )}
       <div className="trophy" title="Best score"><span aria-hidden="true">🏆</span><b>{fmt(state.bestScore)}</b></div>

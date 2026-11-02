@@ -1,7 +1,7 @@
 // Pure, deterministic game logic (no three.js, no DOM). Fixed time-step so runs are reproducible per seed.
 //
 // RULES  (N = correct verifications = number of ATTEMPTS)
-//  - Each attempt is an endless Flappy-Bird run: unlimited flaps, gates keep coming, the ground and pipes end the attempt.
+//  - Each attempt is an endless alien runner: unlimited jumps, barriers keep coming, and a crash ends the attempt.
 //  - Score of an attempt = 100 per gate + 50 per coin. Only your HIGHEST attempt counts.
 //  - Coins charge the watch. At each TIERS threshold (coins in one attempt) the hero transforms into a stronger form,
 //    and every gate/coin is worth (1 + tier) times more.
@@ -21,6 +21,7 @@ export const SPACING = 4.2;         // base distance between gates
 export const AHEAD = 90;            // how far ahead gates are generated
 export const TIERS = [8, 18, 30];   // coins (in one attempt) needed to reach forms 1, 2, 3 (form 0 = base hero)
 export const FORMS = ['ben', 'xlr8', 'alien3', 'alien4'];
+export const FORM_NAMES = { ben: 'Ben', xlr8: 'XLR8', alien3: 'Smash Alien', alien4: 'Tank Alien' };
 const LO = 2.7, HI = 9.3;           // altitude band for gate centres (wide, so bars sit high and low)
 
 // Small seeded RNG so every seed gives a different but reproducible street.
@@ -49,7 +50,7 @@ export class Level {
   ensure(x) {
     while (this.nextX < x) {
       const i = this.gates.length, cy = Math.min(HI, Math.max(LO, this.lastCy + (this.R() * 2 - 1) * 3.5));
-      this.gates.push({ i, x: this.nextX, cy, gap: gapFor(i), passed: false, coinTaken: false });
+      this.gates.push({ i, x: this.nextX, cy, gap: gapFor(i), kind: ['barrier', 'drone', 'block'][i % 3], passed: false, coinTaken: false, smashed: false });
       this.lastCy = cy; this.nextX += SPACING + this.R() * .9;
     }
   }
@@ -65,6 +66,7 @@ export class Sim {
     this.cause = null;          // pipe | ground
     this.passed = 0; this.coins = 0; this.score = 0; this.tier = 0;
     this.events = []; this.acc = 0; this.tilt = 0; this.gi = 0;
+    this.form = 'ben'; this.shield = 0; this.hitCooldown = 0;
     this.level.ensure(LEAD + AHEAD);
   }
   /** Player pressed flap. */
@@ -75,6 +77,19 @@ export class Sim {
     this.events.push({ type: 'flap' });
     return true;
   }
+  setForm(form) {
+    if (!FORMS.includes(form)) return false;
+    this.form = form;
+    if (form === 'alien4' && this.shield < 2) this.shield = 2;
+    this.events.push({ type: 'swap', form });
+    return true;
+  }
+  switchForm(direction = 1) {
+    const max = Math.min(FORMS.length - 1, this.tier);
+    const current = FORMS.indexOf(this.form);
+    const next = Math.max(0, Math.min(max, current + direction));
+    return this.setForm(FORMS[next]);
+  }
   /** Advance by real dt seconds (accumulated into fixed steps). */
   advance(dt) {
     if (this.status === 'ready') { this.hover += dt; return; }
@@ -84,7 +99,9 @@ export class Sim {
   }
   tick() {
     this.t += DT;
-    this.x += speedFor(this.passed) * DT;
+    this.hitCooldown = Math.max(0, this.hitCooldown - DT);
+    const formSpeed = this.form === 'xlr8' ? 1.32 : this.form === 'alien4' ? 0.78 : 1;
+    this.x += speedFor(this.passed) * formSpeed * DT;
     const b = stepBird(this.y, this.vy);
     this.y = b.y; this.vy = b.vy;
     this.tilt += ((Math.max(-1, Math.min(1, this.vy / 10))) - this.tilt) * 0.15;
@@ -100,7 +117,23 @@ export class Sim {
       if (bx > l && bx < r) {
         const top = g.cy + g.gap / 2 - BIRD_R * 0.85;
         const bot = g.cy - g.gap / 2 + BIRD_R * 0.85;
-        if (this.y > top || this.y < bot) return this.lose('pipe');
+        const blocked = this.y > top || this.y < bot;
+        if (blocked) {
+          if (this.form === 'xlr8' && g.kind === 'barrier' && this.y < bot) continue;
+          if (this.form === 'alien3' && g.kind === 'block' && !g.smashed) {
+            g.smashed = true;
+            this.score += 75;
+            this.events.push({ type: 'smash', i: g.i });
+            continue;
+          }
+          if (this.form === 'alien4' && this.shield > 0 && this.hitCooldown === 0) {
+            this.shield--;
+            this.hitCooldown = 1.2;
+            this.events.push({ type: 'shield', shield: this.shield });
+            continue;
+          }
+          return this.lose(this.form === 'alien4' ? 'tank-hit' : g.kind);
+        }
       }
       if (!g.passed && bx > g.x + PIPE_W / 2) {
         g.passed = true; this.passed++; this.score += 100 * (1 + this.tier);

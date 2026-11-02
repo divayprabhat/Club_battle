@@ -16,7 +16,7 @@ export function Budget({ state, dispatch }) {
       <div className="pips big">{state.answers.map((a, i) => <motion.i key={i} className={a ? 'ok' : 'bad'} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: .1 * i + .2 }} />)}</div>
       {low ? <p className="warn">You earned no attempts. Get at least one sample right to play. Restart and verify again.</p>
         : <><p className="muted">You labelled {n} of {state.answers.length} samples correctly. That is {n} attempt{n > 1 ? 's' : ''}.</p>
-          <p className="small muted">Each attempt is a fresh endless run with unlimited flaps. A crash ends it. Only your highest score counts.</p></>}
+          <p className="small muted">Each attempt is a fresh arena fight. Defeat drones and survive waves; losing all health ends it. Only your highest score counts.</p></>}
       {low ? <Btn variant="play" className="block" onClick={() => dispatch({ type: 'reset', screen: 'research' })}>Restart mission</Btn>
         : <Btn variant="play" className="block" onClick={() => dispatch({ type: 'go', screen: 'game' })} autoFocus>Start attempt 1</Btn>}
     </div>
@@ -35,11 +35,11 @@ export function Results({ state, dispatch }) {
       <motion.div className="score-big" initial={{ scale: .5 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 220 }}>{fmt(score)}</motion.div>
       {newBest && <p className="newbest">New best score</p>}
       <dl className="stats">
-        <div><dt>Gates</dt><dd>{run?.passed ?? 0}</dd></div><div><dt>Coins</dt><dd>{run?.coins ?? 0}</dd></div>
+        <div><dt>Drones</dt><dd>{run?.passed ?? 0}</dd></div><div><dt>Watch charge</dt><dd>{run?.coins ?? 0}</dd></div>
         <div><dt>Attempts</dt><dd>{correct}</dd></div><div><dt>All-time best</dt><dd>{fmt(bestScore)}</dd></div>
       </dl>
       {run?.scores?.length > 1 && <p className="small muted">Attempt scores: {run.scores.map(fmt).join(' · ')}</p>}
-      <p className="muted">{won ? 'More coins in one attempt power up the watch, change your form and multiply your points.' : `Collect ${TIERS[0]} coins in a single attempt to power up the watch and transform.`}</p>
+      <p className="muted">{won ? 'You survived into a difficult wave and earned the alien watch form.' : `Defeat alien drones and build watch charge until your alien forms unlock. Later waves become faster and more dangerous.`}</p>
       <p className="tip">Takeaway: {tip}</p>
       <Btn variant="play" className="block" onClick={() => dispatch({ type: 'reset', screen: 'research' })} autoFocus>New mission</Btn>
       <div className="row"><Btn variant="slate" onClick={() => dispatch({ type: 'reset' })}>Menu</Btn></div>
