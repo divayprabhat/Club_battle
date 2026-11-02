@@ -73,12 +73,6 @@ export default function Game({ state, dispatch }) {
   const switchForm = form => {
     const arena = arenaRef.current;
     if (!arena || paused || end) return;
-    const index = ARENA_FORMS.indexOf(form);
-    const required = [0, 8, 18, 30][index];
-    if (arena.charge < required) {
-      setToast(`Collect ${required} watch charge to unlock ${ARENA_STATS[form].name}.`);
-      return;
-    }
     if (arena.setForm(form)) {
       sfx.win(); vibrate(30);
       setToast(`${ARENA_STATS[form].name} selected`);
@@ -187,11 +181,10 @@ export default function Game({ state, dispatch }) {
 
         <div className="arena-form-bar arena-ui">
           {ARENA_FORMS.map((form, index) => {
-            const required = [0, 8, 18, 30][index];
-            return <button key={form} className={`arena-form ${ui.form === form ? 'active' : ''}`} disabled={ui.charge < required} onPointerDown={e => e.stopPropagation()} onClick={() => switchForm(form)}>
+            return <button key={form} className={`arena-form ${ui.form === form ? 'active' : ''}`} aria-label={`Switch to ${ARENA_STATS[form].name}`} onPointerDown={e => e.stopPropagation()} onClick={() => switchForm(form)}>
               <img src={`${ART}${form}.png`} alt={ARENA_STATS[form].name} />
               <span>{index + 1}</span>
-              <small>{required ? `${ui.charge}/${required}` : 'READY'}</small>
+              <small>{ui.form === form ? 'ACTIVE' : ARENA_STATS[form].name}</small>
             </button>;
           })}
         </div>
