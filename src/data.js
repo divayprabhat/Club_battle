@@ -88,9 +88,39 @@ const shuffle = (a, rnd) => { a = [...a]; for (let i = a.length - 1; i > 0; i--)
 export function makeRound(rnd = Math.random) {
   const passage = PASSAGES[Math.floor(rnd() * PASSAGES.length)];
   const kinds = shuffle(['TEXT', 'NEWS', 'AUDIO', 'IMAGE'], rnd);
-  const by = Object.fromEntries(kinds.map(k => [k, shuffle(POOL.filter(q => q.kind === k), rnd)]));
+  const by = Object.fromEntries(kinds.map(k => [
+    k,
+    {
+      real: shuffle(POOL.filter(q => q.kind === k && q.answer === 'real'), rnd),
+      ai: shuffle(POOL.filter(q => q.kind === k && q.answer === 'ai'), rnd),
+    },
+  ]));
   const picked = [];
-  while (picked.length < passage.count && kinds.some(k => by[k].length)) for (const k of kinds) if (by[k].length && picked.length < passage.count) picked.push(by[k].pop());
+  let realLeft = Math.floor(passage.count / 2);
+  let aiLeft = passage.count - realLeft;
+  let kindIndex = 0;
+  while (picked.length < passage.count) {
+    const k = kinds[kindIndex++ % kinds.length];
+    let answer = realLeft >= aiLeft ? 'real' : 'ai';
+    if (answer === 'real' && realLeft > 0 && !by[k].real.length) answer = 'ai';
+    if (answer === 'ai' && aiLeft > 0 && !by[k].ai.length) answer = 'real';
+    if (answer === 'real' && realLeft > 0 && by[k].real.length) {
+      picked.push(by[k].real.pop());
+      realLeft--;
+    } else if (answer === 'ai' && aiLeft > 0 && by[k].ai.length) {
+      picked.push(by[k].ai.pop());
+      aiLeft--;
+    } else if (by[k].real.length && realLeft > 0) {
+      picked.push(by[k].real.pop());
+      realLeft--;
+    } else if (by[k].ai.length && aiLeft > 0) {
+      picked.push(by[k].ai.pop());
+      aiLeft--;
+    } else {
+      // This media category has no sample left for the remaining answer.
+      continue;
+    }
+  }
   return { passage, questions: shuffle(picked, rnd) };
 }
 

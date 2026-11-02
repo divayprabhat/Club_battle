@@ -27,7 +27,7 @@ export default function Quiz({ state, dispatch }) {
         <button className={cls('ai')} disabled={done} onClick={() => answer('ai')}><span>AI-made</span><Key>2</Key></button>
       </div>
       <div className={`verdict ${done ? (ok ? 'success' : 'error') : ''}`} aria-live="polite">
-        {done ? <><b>{ok ? 'Correct. +1 attempt' : 'Not quite. No attempt'}</b><p>{q.why ?? KEY}</p><ul>{q.clues.map(c => <li key={c}>{c}</li>)}</ul>{q.source && <p className="small"><a href={q.source} target="_blank" rel="noreferrer">Original source</a></p>}</> : <p className="muted">Pick a label. Right answers earn flaps.</p>}
+        {done ? <><b>{ok ? 'Correct. +1 attempt' : 'Not quite. No attempt'}</b><p>{q.why ?? KEY}</p><ul>{q.clues.map(c => <li key={c}>{c}</li>)}</ul>{q.source && <p className="small"><a href={q.source} target="_blank" rel="noreferrer">Original source</a></p>}</> : <p className="muted">Pick a label. Right answers earn arena attempts.</p>}
       </div>
       <Btn ref={nextRef} variant="play" className="block" onClick={next} disabled={!done}>{i === Q.length - 1 ? 'See my attempts' : 'Next sample'}</Btn>
     </div>
