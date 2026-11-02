@@ -29,23 +29,32 @@ const Warp = ({ onDone }) => (
     transition={{ duration: .2 }}
   >
     <motion.img
-      className="guess-alien"
-      src={`${import.meta.env.BASE_URL}art/guess-alien.png`}
-      alt="Animated alien character"
-      initial={{ scale: .35, x: 180, rotate: 8, opacity: 0 }}
-      animate={{ scale: [1, 1.08, 1], x: [180, 0, 0], rotate: [8, 0, -2], opacity: 1 }}
-      transition={{ duration: 1.4, times: [0, .55, 1], ease: 'easeOut' }}
+      className="guess-frame guess-ben"
+      src={`${import.meta.env.BASE_URL}art/guess-ben-transform.png`}
+      alt="Ben activating the alien transformation"
+      initial={{ scale: .9, opacity: 0 }}
+      animate={{ scale: [0.9, 1, 1.04], opacity: [0, 1, 0] }}
+      transition={{ duration: 1.05, times: [0, .65, 1], ease: 'easeOut' }}
+    />
+    <motion.img
+      className="guess-frame guess-alien"
+      src={`${import.meta.env.BASE_URL}art/guess-alien-transform.png`}
+      alt="Alien transformation reveal"
+      initial={{ scale: .55, rotate: -4, opacity: 0 }}
+      animate={{ scale: [0.55, 1.12, 1], rotate: [-4, 2, 0], opacity: [0, 1, 1] }}
+      transition={{ delay: .82, duration: 1.35, times: [0, .55, 1], ease: 'easeOut' }}
       onAnimationComplete={onDone}
     />
     <motion.div
       className="guess-copy"
       initial={{ y: 50, scale: .8, opacity: 0 }}
       animate={{ y: 0, scale: [1, 1.06, 1], opacity: 1 }}
-      transition={{ delay: .25, duration: .75 }}
+      transition={{ delay: 1.15, duration: .75 }}
     >
       <span>CAN YOU</span>
       <strong>GUESS IT?</strong>
     </motion.div>
+    <motion.div className="transform-flash" initial={{ opacity: 0, scale: .1 }} animate={{ opacity: [0, 1, 0], scale: [0.1, 1.8, 2.4] }} transition={{ delay: .72, duration: .48, ease: 'easeOut' }} />
     <motion.div className="guess-scan" initial={{ y: '-100%' }} animate={{ y: '100%' }} transition={{ delay: .5, duration: 1.2, ease: 'linear' }} />
   </motion.div>
 );
