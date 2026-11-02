@@ -52,8 +52,12 @@ function AudioSample({ src }) {
 }
 
 export function Sample({ q, reveal }) {
-  if (q.kind === 'IMAGE') return <figure className="sample sample-image"><PixelImage variant={q.variant} reveal={reveal} />
-    <figcaption>{reveal ? 'Highlighted: what to inspect' : 'Zoom with your eyes. Then decide.'}</figcaption></figure>;
+  if (q.kind === 'IMAGE') return <figure className="sample sample-image">
+    {q.src
+      ? <img className="sample-photo" src={`${import.meta.env.BASE_URL}${q.src}`} alt={q.alt ?? 'Question image'} />
+      : <PixelImage variant={q.variant} reveal={reveal} />}
+    <figcaption>{reveal ? `This sample is marked ${q.answer === 'ai' ? 'AI-generated' : 'real'} in the answer key.` : 'Look closely. Then decide.'}</figcaption>
+  </figure>;
   if (q.kind === 'TEXT') return <div className="sample sample-text"><p>{q.body}</p></div>;
   if (q.kind === 'NEWS') return <div className="sample sample-news"><div className="news-flag">NEWS</div><h3>{q.headline}</h3><p className="news-body">{q.body}</p></div>;
   return <AudioSample key={q.src} src={q.src} />;

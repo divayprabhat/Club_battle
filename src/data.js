@@ -19,11 +19,28 @@ const text = (body, answer, clues, extra = {}) => ({ kind: 'TEXT', category: 'TE
 const news = (headline, body, answer, source) => ({ kind: 'NEWS', category: 'NEWS', title: 'A news brief', description: 'A short news item. Decide who wrote it.', headline, body, answer, clues: NEWS[answer], source });
 const audio = (src, answer) => ({ kind: 'AUDIO', category: 'AUDIO', title: 'A voice clip', description: 'Press play and listen to the whole clip. Is the voice human or synthetic?', src, answer, clues: AUD[answer] });
 const KEY = 'This item is labelled that way in the answer key you supplied. Style alone is never proof.';
+const image = (src, title, description, alt, answer = 'ai') => ({
+  kind: 'IMAGE',
+  category: 'IMAGE',
+  src,
+  title,
+  description,
+  alt,
+  answer,
+  why: answer === 'ai'
+    ? 'This image is supplied as an AI-generated sample. Visual clues alone are never definitive.'
+    : 'This image is supplied as a real photograph. The answer is based on the sample provenance, not appearance alone.',
+  clues: IMG_CLUES[answer],
+});
 
 export const POOL = [
-  // ---- images (placeholders until your own images arrive) ----
-  { kind: 'IMAGE', category: 'IMAGE', variant: 'landscape', title: 'A mountain landscape', description: 'A polished landscape with a lake. Decide if it is a real photo or generated.', answer: 'ai', why: 'Its source record labels it as generated. Visual clues alone are never definitive.', clues: IMG_CLUES.ai },
-  { kind: 'IMAGE', category: 'IMAGE', variant: 'monument', title: 'A public monument', description: 'A photo with an archive caption. Decide if it is real or generated.', answer: 'real', why: 'The sample is tied to an archive record. Provenance is stronger evidence than appearance.', clues: IMG_CLUES.real },
+  // ---- AI-generated images ----
+  image('art/ai-wolf.png', 'A black wolf among golden plants', 'A close-up wildlife scene. Decide if this photograph is real or generated.', 'AI-generated black wolf surrounded by golden plants'),
+  image('art/ai-mountains.png', 'A mountain valley at sunrise', 'A detailed alpine landscape. Decide if this photograph is real or generated.', 'AI-generated mountain valley with clouds, forests, and sunrise'),
+  image('art/ai-donkey.png', 'A donkey on a country road', 'A pastoral farm scene with a mountain backdrop. Decide if this illustration is real or generated.', 'AI-generated donkey standing beside a wooden fence'),
+  image('art/real-red-sky-street.png', 'Red sky over a city street', 'A nighttime street scene beneath dramatic red clouds. Decide if this photograph is real or generated.', 'Real photograph of a red sky over a city street', 'real'),
+  image('art/real-red-sunset-pier.png', 'Red sunset beside a pier', 'A coastal sunset with a pier and silhouetted visitors. Decide if this photograph is real or generated.', 'Real photograph of a red sunset beside a coastal pier', 'real'),
+  image('art/real-dogs.png', 'Two dogs resting outdoors', 'Two dogs lying together in a sunny outdoor setting. Decide if this photograph is real or generated.', 'Real photograph of two dogs resting outdoors', 'real'),
 
   // ---- news briefs (article_ACM.docx) ----
   news('NEW AI PLATFORM TURNS SIMPLE TEXT PROMPTS INTO SHORT FILMS', 'A new AI platform can generate scripts, scenes, character voices and background music from simple text descriptions. During a demonstration, it reportedly created a three-minute film in under an hour. The technology could help independent filmmakers reduce production costs, but concerns over copyright and creative jobs remain. The company plans to release the platform next year.', 'ai'),
