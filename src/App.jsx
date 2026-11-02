@@ -20,11 +20,33 @@ class Boundary extends Component {
         <button className="text-btn" onClick={() => { this.setState({ err: null }); this.props.onReset(); }}>Back to menu</button></div></div>;
   }
 }
-const C0 = 'circle(0% at 50% 60%)', C1 = 'circle(150% at 50% 60%)';
 const Warp = ({ onDone }) => (
-  <motion.div className="warp" initial={{ clipPath: C0, opacity: 1 }} animate={{ clipPath: [C0, C1, C1], opacity: [1, 1, 0] }}
-    transition={{ clipPath: { duration: 1.3, times: [0, .38, 1], ease: 'easeIn' }, opacity: { duration: 1.3, times: [0, .6, 1] } }} onAnimationComplete={onDone}>
-    <div className="warp-spin" /><div className="warp-flash" />
+  <motion.div
+    className="guess-intro"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: .2 }}
+  >
+    <motion.img
+      className="guess-alien"
+      src={`${import.meta.env.BASE_URL}art/guess-alien.png`}
+      alt="Animated alien character"
+      initial={{ scale: .35, x: 180, rotate: 8, opacity: 0 }}
+      animate={{ scale: [1, 1.08, 1], x: [180, 0, 0], rotate: [8, 0, -2], opacity: 1 }}
+      transition={{ duration: 1.4, times: [0, .55, 1], ease: 'easeOut' }}
+      onAnimationComplete={onDone}
+    />
+    <motion.div
+      className="guess-copy"
+      initial={{ y: 50, scale: .8, opacity: 0 }}
+      animate={{ y: 0, scale: [1, 1.06, 1], opacity: 1 }}
+      transition={{ delay: .25, duration: .75 }}
+    >
+      <span>CAN YOU</span>
+      <strong>GUESS IT?</strong>
+    </motion.div>
+    <motion.div className="guess-scan" initial={{ y: '-100%' }} animate={{ y: '100%' }} transition={{ delay: .5, duration: 1.2, ease: 'linear' }} />
   </motion.div>
 );
 const SCREENS = { home: Home, how: How, quiz: Quiz, budget: Budget, game: Game, results: Results };
@@ -33,7 +55,6 @@ function Root() {
   const Screen = SCREENS[state.screen], inGame = state.screen === 'game';
   useEffect(() => { configure(state.settings); }, [state.settings]);
   useEffect(() => { window.scrollTo({ top: 0 }); }, [state.screen]);
-  useEffect(() => { if (!state.warp) return; const t = setTimeout(() => dispatch({ type: 'go', screen: state.warp }), 520); return () => clearTimeout(t); }, [state.warp]);
   return (
     <MotionConfig reducedMotion="user">
       {inGame ? <Game key={state.seed + ':' + state.attempts} state={state} dispatch={dispatch} /> : <>

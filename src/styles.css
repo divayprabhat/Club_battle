@@ -186,6 +186,13 @@ h1 .big{font-size:1.55em;color:#fff;text-shadow:0 3px 0 var(--orange),0 7px 0 va
 .warp-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 60%,#fff 0,rgba(255,255,255,0) 45%);animation:wflash 1.3s ease-out}
 @keyframes wspin{to{transform:rotate(360deg)}}@keyframes wflash{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
 
+.guess-intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:hidden;background:#071125}
+.guess-alien{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:drop-shadow(0 0 28px rgba(125,255,208,.35))}
+.guess-copy{position:absolute;left:50%;bottom:9%;z-index:2;transform:translateX(-50%);width:max-content;text-align:center;color:#fff;text-shadow:0 4px 0 #120c1f,0 0 18px #7dffd0;font-family:var(--f-ui)}
+.guess-copy span{display:block;font-size:clamp(12px,4vw,22px);letter-spacing:.18em;color:#7dffd0}
+.guess-copy strong{display:block;margin-top:6px;font-size:clamp(28px,9vw,62px);line-height:1}
+.guess-scan{position:absolute;inset:-20% 0;z-index:3;pointer-events:none;border-bottom:3px solid rgba(125,255,208,.75);background:linear-gradient(180deg,transparent 0,rgba(125,255,208,.12) 95%,rgba(125,255,208,.32) 100%)}
+
 /* ---------- research paragraph ---------- */
 .paper-body{font-size:14px;line-height:1.85;text-align:left;margin:4px 0 14px}
 
