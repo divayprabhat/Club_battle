@@ -21,7 +21,7 @@ export function Home({ state, dispatch }) {
   const [sheet, setSheet] = useState(null);
   const go = screen => { startMusic(); dispatch({ type: 'go', screen }); };
   const warp = screen => { startMusic(); sfx.good(); dispatch({ type: 'warp', to: screen }); };
-  useKey([' ', 'Enter'], () => !sheet && warp('research'), [sheet]);
+  useKey([' ', 'Enter'], () => !sheet && warp('quiz'), [sheet]);
   const { settings: st, runs } = state;
   return (
     <div className="home">
@@ -30,7 +30,7 @@ export function Home({ state, dispatch }) {
         <p className="tagline">Verify the signal. Earn your attempts.</p>
       </div>
       <div className="menu-card">
-        <div className="watch-wrap"><Watch onPress={() => warp('research')} /><span className="watch-label">PLAY</span></div>
+        <div className="watch-wrap"><Watch onPress={() => warp('quiz')} /><span className="watch-label">PLAY</span></div>
         <div className="menu-grid">
           <Btn variant="slate" onClick={() => go('how')}>How to</Btn>
           <Btn variant="slate" onClick={() => setSheet('scores')}>Scores</Btn>
@@ -56,8 +56,7 @@ export function Home({ state, dispatch }) {
 }
 
 const STEPS = [
-  ['Read', 'Open the research note. It changes every run. Find how many items the verification round contains and enter that number.'],
-  ['Verify', 'Label each sample as human-made or AI-made. Samples are drawn at random: text, news, audio and images. Each correct label earns one attempt.'],
+  ['Verify', 'Answer five randomized Real or AI questions. Each correct label earns one attempt.'],
   ['Fight', 'Move around the city arena and destroy incoming alien drones. Aim and attack with mouse or touch. Switch between Ben and unlocked alien forms, each with different speed, armor, and attack power. Waves become harder until your health reaches zero.'],
 ];
 export function How({ dispatch }) {

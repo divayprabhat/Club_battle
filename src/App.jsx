@@ -5,7 +5,6 @@ import { configure } from './sfx.js';
 import { TopHud } from './components/Chrome.jsx';
 import Backdrop from './components/Backdrop.jsx';
 import { Home, How } from './screens/Home.jsx';
-import Research from './screens/Research.jsx';
 import Quiz from './screens/Quiz.jsx';
 import { Budget, Results } from './screens/Report.jsx';
 import Game from './screens/Game.jsx';
@@ -28,7 +27,7 @@ const Warp = ({ onDone }) => (
     <div className="warp-spin" /><div className="warp-flash" />
   </motion.div>
 );
-const SCREENS = { home: Home, how: How, research: Research, quiz: Quiz, budget: Budget, game: Game, results: Results };
+const SCREENS = { home: Home, how: How, quiz: Quiz, budget: Budget, game: Game, results: Results };
 function Root() {
   const [state, dispatch] = useReducer(reducer, undefined, initial);
   const Screen = SCREENS[state.screen], inGame = state.screen === 'game';

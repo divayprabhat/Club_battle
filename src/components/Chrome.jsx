@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Avatar } from './ui.jsx';
 import { sfx } from '../sfx.js';
 
-const PHASE = { research: 1, quiz: 2, budget: 2, game: 3, results: 3 };
+const PHASE = { quiz: 1, budget: 1, game: 2, results: 2 };
 export const fmt = n => String(n).padStart(6, '0');
 
 export function TopHud({ state, dispatch }) {
@@ -14,7 +14,7 @@ export function TopHud({ state, dispatch }) {
       </button>
       {p > 0 && (
         <ol className="phases" aria-label="Mission progress">
-          {['Read', 'Verify', 'Fight'].map((t, i) => <li key={t} className={i + 1 < p ? 'done' : i + 1 === p ? 'now' : ''} aria-current={i + 1 === p ? 'step' : undefined}>{t}</li>)}
+          {['Verify', 'Fight'].map((t, i) => <li key={t} className={i + 1 < p ? 'done' : i + 1 === p ? 'now' : ''} aria-current={i + 1 === p ? 'step' : undefined}>{t}</li>)}
         </ol>
       )}
       <div className="trophy" title="Best score"><span aria-hidden="true">🏆</span><b>{fmt(state.bestScore)}</b></div>

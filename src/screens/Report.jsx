@@ -8,7 +8,7 @@ import { FORMS, TIERS } from '../game/sim.js';
 export function Budget({ state, dispatch }) {
   const n = state.attempts, [v, setV] = useState(0), low = n < 1;
   useEffect(() => { const a = animate(0, n, { duration: .9, ease: 'easeOut', onUpdate: x => setV(Math.round(x)) }); return () => a.stop(); }, [n]);
-  useKey([' ', 'Enter'], () => (low ? dispatch({ type: 'reset', screen: 'research' }) : dispatch({ type: 'go', screen: 'game' })), [low]);
+  useKey([' ', 'Enter'], () => (low ? dispatch({ type: 'reset', screen: 'quiz' }) : dispatch({ type: 'go', screen: 'game' })), [low]);
   return (
     <div className="card page center">
       <h2>Your attempts</h2>
@@ -17,16 +17,16 @@ export function Budget({ state, dispatch }) {
       {low ? <p className="warn">You earned no attempts. Get at least one sample right to play. Restart and verify again.</p>
         : <><p className="muted">You labelled {n} of {state.answers.length} samples correctly. That is {n} attempt{n > 1 ? 's' : ''}.</p>
           <p className="small muted">Each attempt is a fresh arena fight. Defeat drones and survive waves; losing all health ends it. Only your highest score counts.</p></>}
-      {low ? <Btn variant="play" className="block" onClick={() => dispatch({ type: 'reset', screen: 'research' })}>Restart mission</Btn>
+      {low ? <Btn variant="play" className="block" onClick={() => dispatch({ type: 'reset', screen: 'quiz' })}>Restart mission</Btn>
         : <Btn variant="play" className="block" onClick={() => dispatch({ type: 'go', screen: 'game' })} autoFocus>Start attempt 1</Btn>}
     </div>
   );
 }
 
 export function Results({ state, dispatch }) {
-  const { won, correct, answers, bestScore, score, run } = state, total = answers.length || 6, form = FORMS[run?.tier ?? 0] ?? 'ben';
+  const { won, correct, answers, bestScore, score, run } = state, total = answers.length || 5, form = FORMS[run?.tier ?? 0] ?? 'ben';
   const tip = TIPS[score % TIPS.length], newBest = score > 0 && score >= bestScore;
-  useKey([' ', 'Enter'], () => dispatch({ type: 'reset', screen: 'research' }), []);
+  useKey([' ', 'Enter'], () => dispatch({ type: 'reset', screen: 'quiz' }), []);
   return (
     <div className="card page center">
       <img className={`result-hero ${form === 'ben' ? 'ben' : 'xlr8'}`} src={`${import.meta.env.BASE_URL}art/${form}.png`} alt={won ? 'The hero transformed' : 'The hero'} />
@@ -41,7 +41,7 @@ export function Results({ state, dispatch }) {
       {run?.scores?.length > 1 && <p className="small muted">Attempt scores: {run.scores.map(fmt).join(' · ')}</p>}
       <p className="muted">{won ? 'You survived into a difficult wave and earned the alien watch form.' : `Defeat alien drones and build watch charge until your alien forms unlock. Later waves become faster and more dangerous.`}</p>
       <p className="tip">Takeaway: {tip}</p>
-      <Btn variant="play" className="block" onClick={() => dispatch({ type: 'reset', screen: 'research' })} autoFocus>New mission</Btn>
+      <Btn variant="play" className="block" onClick={() => dispatch({ type: 'reset', screen: 'quiz' })} autoFocus>New mission</Btn>
       <div className="row"><Btn variant="slate" onClick={() => dispatch({ type: 'reset' })}>Menu</Btn></div>
     </div>
   );

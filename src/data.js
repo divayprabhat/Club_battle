@@ -1,5 +1,4 @@
-// Question pool + research passages. Every run draws a random passage; the passage states how many items
-// the verification round has, and that many questions are drawn at random from POOL.
+// Question pool. Every verification round has five random questions.
 // answer: 'real' = human-made, 'ai' = AI-made.   Edit this file to add or relabel items.
 
 const IMG_CLUES = { ai: ['Repeated cloud shapes', 'Reflection does not match the peaks', 'Source record: "generated"'], real: ['Archive record with date', 'Photographer credit', 'Consistent light and shadow'] };
@@ -86,42 +85,15 @@ export const PASSAGES = [
 const shuffle = (a, rnd) => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 /** One round: a random passage, then passage.count questions drawn at random, spread across media types. */
 export function makeRound(rnd = Math.random) {
-  const passage = PASSAGES[Math.floor(rnd() * PASSAGES.length)];
-  const kinds = shuffle(['TEXT', 'NEWS', 'AUDIO', 'IMAGE'], rnd);
-  const by = Object.fromEntries(kinds.map(k => [
-    k,
-    {
-      real: shuffle(POOL.filter(q => q.kind === k && q.answer === 'real'), rnd),
-      ai: shuffle(POOL.filter(q => q.kind === k && q.answer === 'ai'), rnd),
-    },
-  ]));
-  const picked = [];
-  let realLeft = Math.floor(passage.count / 2);
-  let aiLeft = passage.count - realLeft;
-  let kindIndex = 0;
-  while (picked.length < passage.count) {
-    const k = kinds[kindIndex++ % kinds.length];
-    let answer = realLeft >= aiLeft ? 'real' : 'ai';
-    if (answer === 'real' && realLeft > 0 && !by[k].real.length) answer = 'ai';
-    if (answer === 'ai' && aiLeft > 0 && !by[k].ai.length) answer = 'real';
-    if (answer === 'real' && realLeft > 0 && by[k].real.length) {
-      picked.push(by[k].real.pop());
-      realLeft--;
-    } else if (answer === 'ai' && aiLeft > 0 && by[k].ai.length) {
-      picked.push(by[k].ai.pop());
-      aiLeft--;
-    } else if (by[k].real.length && realLeft > 0) {
-      picked.push(by[k].real.pop());
-      realLeft--;
-    } else if (by[k].ai.length && aiLeft > 0) {
-      picked.push(by[k].ai.pop());
-      aiLeft--;
-    } else {
-      // This media category has no sample left for the remaining answer.
-      continue;
-    }
-  }
-  return { passage, questions: shuffle(picked, rnd) };
+  const real = shuffle(POOL.filter(q => q.answer === 'real'), rnd);
+  const ai = shuffle(POOL.filter(q => q.answer === 'ai'), rnd);
+  const realCount = rnd() < .5 ? 2 : 3;
+  const aiCount = 5 - realCount;
+  const questions = [
+    ...real.slice(0, realCount),
+    ...ai.slice(0, aiCount),
+  ];
+  return { passage: null, questions: shuffle(questions, rnd) };
 }
 
 export const TIPS = ['Provenance beats appearance.', 'Look for the original source, not the loudest copy.', 'A missing date or author is a clue, not a verdict.', 'Corroboration: can a second outlet confirm it?'];
