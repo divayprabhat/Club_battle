@@ -62,7 +62,7 @@ h1{font:400 clamp(48px,16vw,92px)/.92 var(--f-title);letter-spacing:2px;color:va
 h1 .big{font-size:1.55em;color:#fff;text-shadow:0 3px 0 var(--orange),0 7px 0 var(--orange-d),0 12px 0 var(--orange-o),0 16px 18px rgba(0,0,0,.5);animation:glitch 6s steps(1) infinite}
 @keyframes glitch{0%,93%,100%{transform:none;filter:none}94%{transform:translateX(-4px);filter:hue-rotate(60deg)}96%{transform:translateX(5px) skewX(-6deg)}98%{transform:translateX(-2px)}}
 .tagline{margin-top:28px;font:10px/1.8 var(--f-ui);color:#f6ecd9;text-shadow:0 2px 0 #000}
-.menu-card{background:var(--panel);border:3px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 0 #0a0614;display:grid;gap:14px}
+.menu-card{background:transparent;border:0;border-radius:0;padding:18px;box-shadow:none;display:grid;gap:14px}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}.span2{grid-column:span 2}
 .press-hint{text-align:center;font:9px var(--f-ui);color:var(--muted);line-height:2.4}
 
